@@ -4,15 +4,16 @@ Kit para configurar Claude Code en una carpeta de Windows. Puedes pedir en espa�
 
 **[Descargar el kit para Windows (.zip)](https://github.com/irqv85/gb-advisors-claude-windows/archive/refs/heads/main.zip)**
 
-Necesitas Windows, PowerShell y una cuenta de Claude Code con acceso a Opus, Haiku y Sonnet. Si todavía no tienes la aplicación de terminal, el paso 3 explica cómo instalarla.
+## Instalación en Windows
 
-## Instalar en un proyecto
+Necesitas Windows con PowerShell y una cuenta de Claude Code con acceso a los modelos que vas a usar. Si falta Claude Code, el instalador usa WinGet para instalar **Claude Code CLI**, la aplicación de terminal de Anthropic.
 
-1. Descarga el ZIP con el enlace anterior. Tras verificar su origen, abre sus **Propiedades**. Si Windows muestra **Desbloquear** y tu organización autoriza el paquete, marca esa opción antes de **Extraer todo**.
-2. Abre **Instalar.cmd** en la carpeta extraída. Selecciona o crea la carpeta donde trabajarás con tus documentos, por ejemplo **Documentos / Revisión comercial**. Si Windows aplica una política corporativa de ejecución, usa el procedimiento de TI para scripts internos.
-3. Si aún necesitas instalar Claude Code, abre PowerShell, ejecuta `winget install Anthropic.ClaudeCode` y espera a que termine. Abre una nueva terminal y comprueba `claude --version`.
-4. En **la carpeta del proyecto**, abre **Abrir Claude.cmd**. Inicia sesión con tu cuenta de trabajo y comprueba que el modelo de la sesión es Opus con `/model`. Cada persona necesita acceso a Claude Code y a los modelos utilizados. El instalador funciona sin credenciales y el inicio de sesión lo gestiona Claude Code.
-5. Copia allí tus archivos de trabajo. En nuevos proyectos, repite el paso 2. Para crear un acceso directo en el escritorio, usa **Enviar a → Escritorio (crear acceso directo)** sobre el lanzador del proyecto.
+1. **Descarga y extrae el ZIP.** Tras verificar su origen, abre sus Propiedades. Si Windows muestra **Desbloquear** y tu organización autoriza el paquete, marca esa opción antes de elegir **Extraer todo**.
+2. **Haz doble clic en Instalar.cmd.** Elige o crea tu carpeta de trabajo, por ejemplo **Documentos / Revisión comercial**. El instalador detecta Claude Code, lo instala con WinGet si hace falta y configura los agentes del proyecto. Atiende cualquier aviso que muestre WinGet.
+3. **Abre el acceso directo en el escritorio.** Se llama **Claude Code - Revisión comercial** si usaste ese nombre de carpeta. Abre la terminal dentro del proyecto con Opus. En el primer uso, sigue el inicio de sesión de Anthropic con tu propia cuenta.
+4. **Pide tu primer análisis.** Copia una exportación en la carpeta del proyecto y escribe tu pedido en la terminal. Más abajo encontrarás un ejemplo con datos ficticios.
+
+Para añadir otro proyecto, repite el paso 2 y elige otra carpeta. Tendrás un acceso directo para cada proyecto. Si el equipo ya tiene la CLI, el instalador reutiliza esa instalación.
 
 También puedes ejecutar el instalador desde PowerShell:
 ```powershell
@@ -29,7 +30,14 @@ La ruta debe corresponder a una carpeta existente.
 | `.claude/rules/gb-advisors.md` | Guarda las instrucciones de delegación junto a las demás reglas del proyecto. |
 | `Abrir Claude.cmd` | Abre Claude en esta carpeta con `claude --model opus`. |
 
-Puedes volver a ejecutar el instalador. Si detecta que uno de los cuatro destinos ya contiene otra versión, te indica la ruta antes de copiar archivos. Si ya configuraste Explore o implementer a mano, compara las definiciones o prueba el kit en otra carpeta. Tu CLAUDE.md conserva su contenido. Para retirar el kit, elimina solo los archivos de esta lista que el kit haya añadido.
+Puedes volver a ejecutar el instalador. Si detecta que uno de los cuatro destinos ya contiene otra versión, te indica la ruta antes de copiar archivos. Si ya configuraste Explore o implementer a mano, compara las definiciones o prueba el kit en otra carpeta. Tu CLAUDE.md conserva su contenido. Para retirar la configuración de un proyecto, elimina su acceso directo y los archivos de la lista que haya añadido el kit. Claude Code seguirá disponible para otros proyectos.
+
+## Si la instalación se detiene
+
+- **Falta WinGet:** instala o actualiza *Instalador de aplicaciones* de Microsoft, abre una ventana nueva y vuelve a ejecutar el instalador.
+- **Windows bloquea el script:** sigue el procedimiento de tu equipo de TI para ejecutar scripts internos.
+- **La terminal no encuentra Claude después de instalarlo:** abre una ventana nueva de PowerShell y comprueba `claude --version`. Si funciona, vuelve a abrir el acceso directo.
+- **Opus no está disponible:** comprueba con tu administrador el acceso de tu cuenta. Puedes consultar el modelo activo con `/model`.
 
 ## Primera prueba en cinco minutos
 
