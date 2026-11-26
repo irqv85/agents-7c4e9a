@@ -2,7 +2,7 @@
 
 Guarda tus archivos en **Documentos\CliGB** y pídele a Claude lo que necesitas en español. Opus coordina el trabajo, Haiku ayuda a localizar información y Sonnet se encarga de tareas como calcular métricas. Opus revisa el resultado.
 
-**[Descargar el kit para Windows (.zip)](https://github.com/irqv85/gb-advisors-claude-windows/archive/refs/heads/main.zip)**
+**[Descargar el kit para Windows (.zip)](https://github.com/irqv85/agents-7c4e9a/archive/refs/heads/main.zip)**
 
 ## Instalación en Windows
 
