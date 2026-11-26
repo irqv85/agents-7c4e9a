@@ -1,21 +1,10 @@
 [CmdletBinding()]
-param([string]$Proyecto)
+param()
 $ErrorActionPreference = 'Stop'
 
-if (-not $Proyecto) {
-    Add-Type -AssemblyName System.Windows.Forms
-    $dialog = New-Object System.Windows.Forms.FolderBrowserDialog
-    $dialog.Description = 'Elige o crea la carpeta del proyecto para Claude Code'
-    try {
-        if ($dialog.ShowDialog() -ne 'OK') { return }
-        $Proyecto = $dialog.SelectedPath
-    } finally { $dialog.Dispose() }
-}
-$folder = Get-Item -LiteralPath $Proyecto
-if (-not $folder.PSIsContainer -or $folder.PSProvider.Name -ne 'FileSystem') {
-    throw 'Selecciona una carpeta de Windows.'
-}
-$root = $folder.FullName
+$documents = [Environment]::GetFolderPath('MyDocuments', 'Create')
+if (-not $documents) { throw 'Windows no pudo localizar la carpeta Documentos de este usuario.' }
+$root = Join-Path $documents 'CliGB'
 $files = [ordered]@{
     'Explore.md' = '.claude\agents\explore.md'
     'implementer.md' = '.claude\agents\implementer.md'
@@ -35,7 +24,7 @@ foreach ($item in $files.GetEnumerator()) {
         }
         if (-not (Test-Path -LiteralPath $target -PathType Leaf) -or
             (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash -ne $expected) {
-            throw "Ya existe una version diferente de $target. Elige otro proyecto o compara los archivos."
+            throw "Ya existe una version diferente de $target. Compara ese archivo con la plantilla antes de instalar."
         }
     } else {
         $pending += [pscustomobject]@{ Source = $source; Target = $target }
@@ -63,7 +52,7 @@ if (-not $desktop -or -not [IO.Directory]::Exists($desktop)) {
 }
 $launcher = Join-Path $root 'Abrir Claude.cmd'
 $shell = New-Object -ComObject WScript.Shell
-$baseName = 'Claude Code - ' + $folder.Name
+$baseName = 'Claude Code - CliGB'
 $name = $baseName
 $number = 1
 do {
