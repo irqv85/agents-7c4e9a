@@ -10,6 +10,19 @@ $files = [ordered]@{
     'implementer.md' = '.claude\agents\implementer.md'
     'delegacion.md' = '.claude\rules\gb-advisors.md'
     'Abrir Claude.cmd' = 'Abrir Claude.cmd'
+    'settings.json' = '.claude\settings.json'
+}
+# Versiones que instalaron kits anteriores (con LF del ZIP o CRLF de un clon).
+# Si el destino coincide con una de ellas se actualiza; si no, es una edicion
+# propia del usuario y no se toca.
+$previous = @{
+    'Explore.md' = @('1ABB646CDB1D9E809DAC7C51AF0E35EF4613BAECD7EF6ADF4355F27D6739A0AC',
+                     'F997C57029E5D4825C90D92BB7B6EFA1129F77313A62477C1A6FA8E55B78DBCD')
+    'implementer.md' = @('FFDED4E391914030F9A66D2C40E6D12A37BC20F2E9373A240976FC300EAD4710',
+                         '17BDCE4272708F8077992DC9BC2FF51009E57A9906FED9E64F43DF6FE75C005E')
+    'delegacion.md' = @('9306789795BD27A03CBCD97B7437A4E029C8C4E7D208CB80D158B02DEC8EC79C',
+                        '72AD2A9DE9D6AC62D17C92E4B4F8B6D059186D32D3B147C6949591E9EA24860B')
+    'Abrir Claude.cmd' = @('36A68BBBFBB6CF7611921B37C78555241E7CFA63545023F4B5904D0DCFA2AE06')
 }
 $pending = @()
 foreach ($item in $files.GetEnumerator()) {
@@ -17,15 +30,16 @@ foreach ($item in $files.GetEnumerator()) {
     $target = Join-Path $root $item.Value
     $expected = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
     if (Test-Path -LiteralPath $target) {
-        # El lanzador del primer kit tambien abre este proyecto con Opus.
-        if ($item.Key -eq 'Abrir Claude.cmd' -and (Test-Path -LiteralPath $target -PathType Leaf) -and
-            (Get-FileHash -LiteralPath $target).Hash -eq '36A68BBBFBB6CF7611921B37C78555241E7CFA63545023F4B5904D0DCFA2AE06') {
+        if (-not (Test-Path -LiteralPath $target -PathType Leaf)) {
+            throw "$target es una carpeta. Revisala antes de instalar."
+        }
+        $current = (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
+        if ($current -eq $expected) { continue }
+        if ($previous.ContainsKey($item.Key) -and $current -in $previous[$item.Key]) {
+            $pending += [pscustomobject]@{ Source = $source; Target = $target }
             continue
         }
-        if (-not (Test-Path -LiteralPath $target -PathType Leaf) -or
-            (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash -ne $expected) {
-            throw "Ya existe una version diferente de $target. Compara ese archivo con la plantilla antes de instalar."
-        }
+        throw "Ya existe una version diferente de $target. Compara ese archivo con la plantilla antes de instalar."
     } else {
         $pending += [pscustomobject]@{ Source = $source; Target = $target }
     }
@@ -44,7 +58,7 @@ if (-not (Get-Command claude.exe -CommandType Application -ErrorAction SilentlyC
 foreach ($file in $pending) {
     $parent = [IO.Path]::GetDirectoryName($file.Target)
     [void][IO.Directory]::CreateDirectory($parent)
-    [IO.File]::Copy($file.Source, $file.Target, $false)
+    [IO.File]::Copy($file.Source, $file.Target, $true)
 }
 $desktop = [Environment]::GetFolderPath('DesktopDirectory')
 if (-not $desktop -or -not [IO.Directory]::Exists($desktop)) {

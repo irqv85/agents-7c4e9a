@@ -42,9 +42,23 @@ Ejecuta el comando desde la carpeta donde extrajiste el instalador.
 | `.claude/agents/explore.md` | Define Explore con Haiku y herramientas de lectura. |
 | `.claude/agents/implementer.md` | Define implementer con Sonnet para cálculos, cambios y pruebas. |
 | `.claude/rules/gb-advisors.md` | Guarda las instrucciones de delegación junto a las demás reglas del proyecto. |
+| `.claude/settings.json` | Fija Opus como modelo, acepta ediciones sin preguntar y define los permisos del proyecto. |
 | `Abrir Claude.cmd` | Abre Claude en esta carpeta con `claude --model opus`. |
 
-Puedes volver a ejecutar el instalador. Si detecta que uno de los cuatro destinos ya contiene otra versión, te indica la ruta antes de copiar archivos. Si ya configuraste Explore o implementer a mano, compara las definiciones antes de instalar. Tu CLAUDE.md conserva su contenido. Para retirar la configuración de un proyecto, elimina su acceso directo y los archivos de la lista que haya añadido el kit. Claude Code seguirá disponible para otros proyectos.
+### Autonomía y permisos
+
+Claude trabaja sin pedir confirmación en cada paso: lee archivos, corre Python y crea archivos nuevos dentro de **CliGB** por su cuenta. Solo pregunta si falta un dato sin el cual el resultado sería incorrecto, y siempre confirma antes de borrar o sobrescribir un original o de enviar un mensaje.
+
+Quedan bloqueados la escritura en Vtiger (crear, actualizar, borrar y relacionar registros), `rm -r` y `git push`. Python está permitido sin preguntar, así que no ejecutes en esta carpeta scripts que no conozcas.
+
+Para leer y generar Excel, Word, PowerPoint y PDF, instala las librerías de Python una vez:
+```powershell
+python -m pip install openpyxl pandas python-pptx python-docx pypdf
+```
+
+### Actualizar
+
+Puedes volver a ejecutar el instalador. Los archivos que instaló una versión anterior del kit se actualizan solos. Si un destino tiene una versión que editaste a mano, el instalador se detiene y te indica la ruta antes de copiar nada: compárala con la plantilla. Si no existe un CLAUDE.md, el kit no lo crea, y si existe no lo modifica. Para retirar la configuración de un proyecto, elimina su acceso directo y los archivos de la lista que haya añadido el kit. Claude Code seguirá disponible para otros proyectos.
 
 ## Si la instalación se detiene
 
@@ -59,7 +73,7 @@ Puedes volver a ejecutar el instalador. Si detecta que uno de los cuatro destino
 
 **Ventas:** «Compara los dos últimos meses completos de facturación por cliente y moneda. Comprueba los totales y explica qué tres clientes contribuyeron más al cambio».
 
-Opus decide qué delegar según el pedido. Cada agente también consume tokens. Para evaluar el beneficio, ejecuta el mismo encargo sobre la misma copia de los datos en dos sesiones nuevas, una con Opus trabajando directamente y otra con delegación. Anota los datos disponibles en `/usage` según el plan, el tiempo y cualquier error en el resultado.
+Opus decide qué delegar según el pedido: lo simple lo responde directo, lo que exige buscar en varias fuentes pasa por Explore y los cálculos y entregables por implementer. Al final indica qué agentes usó. Cada agente también consume tokens. Para evaluar el beneficio, ejecuta el mismo encargo sobre la misma copia de los datos en dos sesiones nuevas, una con Opus trabajando directamente y otra con delegación. Anota los datos disponibles en `/usage` según el plan, el tiempo y cualquier error en el resultado.
 
 ### Documentación de Anthropic
 
